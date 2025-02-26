@@ -8,6 +8,9 @@ if [ ! -d "$WDIR" ]; then
   echo "$WDIR does not exist."
 fi
 
+# TODO: Fail if `goat` is not installed.
+# TODO: Fail if `goat` is not authenticated.
+
 echo "Populating lexicon with NSIDs from $WDIR"
 
 workspace=$(mktemp -d "${TMPDIR:-/tmp/}$(basename $0).XXXXXXXXXXXX")
@@ -29,11 +32,16 @@ do
 
             goat lex parse "${definition}"
 
-            jq -s '{"$type": "com.atproto.lexicon.schema"} *.[0]' "${definition}" > "${workspace}/${RKEY}.json"
+            jq -s '{"$type": "com.atproto.lexicon.schema"} * .[0]' "${definition}" > "${workspace}/${RKEY}.json"
             echo "Created ${workspace}/${RKEY}.json"
 
+            # TODO: Look into using `goat lex publish` instead of `goat record create`.
             goat record create --rkey="${RKEY}" "${workspace}/${RKEY}.json"
+
+            # TODO: Consider using `goat lex validate` on published records.
         done
 
     fi
 done
+
+# TODO: Destroy the temporary workspace.
