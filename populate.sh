@@ -35,8 +35,7 @@ do
             jq -s '{"$type": "com.atproto.lexicon.schema"} * .[0]' "${definition}" > "${workspace}/${RKEY}.json"
             echo "Created ${workspace}/${RKEY}.json"
 
-            # TODO: Look into using `goat lex publish` instead of `goat record create`.
-            goat record create --rkey="${RKEY}" "${workspace}/${RKEY}.json"
+            goat lex publish "${workspace}/${RKEY}.json"
 
             # TODO: Consider using `goat lex validate` on published records.
         done
